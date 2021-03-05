@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<style>
+body {
+  background-image: url('https://images.pexels.com/photos/531880/pexels-photo-531880.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+</style>
+<style>
+p {
+  background-color: lightgrey;
+  width: 300px;
+  border: 2px solid green;
+  padding: 5px;
+  margin: 3px;
+}
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  background-color: lightgrey;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+
+<html>
+  <head>
+    <title>Health York</title>
+<script defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAK6teLHEj078w22PEFtVbuS3-jV24amrY&libraries=places&callback=initMap">
+</script>
+    <style type="text/css">
+      /* Set the size of the div element that contains the map */
+      #map {
+        height: 400px;
+        /* The height is 400 pixels */
+        width: 100%;
+        /* The width is the width of the web page */
+      }
+    </style> 
+    <style>
+  #legend {
+    font-family: Arial, sans-serif;
+    background: #fff;
+    padding: 10px;
+    margin: 10px;
+    border: 3px solid #000;
+  }
+</style>
+    <script>
+      // Initialize and add the map
+      function initMap() {
+        // The location of Hunter College 40.767812,-73.964562
+        const Hunter = { lat: 40.767812, lng: -73.964562 };
+        // The map, centered at Hunter
+        const map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 20,
+	  //Zoom levels should be by buildings due to this being about resturants
+          center: Hunter,
+        });
+	//javascript to check for when search bar button is used
+	  const geocoder = new google.maps.Geocoder();
+  	document.getElementById("submit").addEventListener("click", () => {
+   	 geocodeAddress(geocoder, map);
+  	});
+	//javascript to check when fetching from the database button is used
+
+        /* The marker, positioned at Hunter
+        const marker = new google.maps.Marker({
+          position: Hunter,
+          map: map,
+	  icon:'https://i.postimg.cc/wvZWBCKM/5a01b9e27ca233f48ba6279e.png',
+        });*/
+        // Another Marker, positioned at Hunter's Bookstore/Coffee Place 40.768187,-73.963437
+	const HunterCoffee = { lat: 40.768187, lng: -73.963437 };
+       /* const marker2 = new google.maps.Marker({
+          position: HunterCoffee,
+          map: map,
+        });*/
+	var currentlat=0;
+	var currentlong=0;
+	//Listener to get long lat for further use of searching
+	google.maps.event.addListener(map, 'click', function(event){
+	currentlat=event.latLng.lat();
+	currentlong=event.latLng.lng();
+	document.getElementById("LatID").innerHTML = currentlat;
+	document.getElementById("LongID").innerHTML = currentlong; 
+});
+
+	//Function to find addresses
+	function geocodeAddress(geocoder, resultsMap) {
+  const address = document.getElementById("address").value;
+  geocoder.geocode({ address: address }, (results, status) => {
+    if (status === "OK") {
+      resultsMap.setCenter(results[0].geometry.location);
+      new google.maps.Marker({
+        map: resultsMap,
+      });
+    } else {
+      alert("Geocode was not successful for the following reason: " + status);
+    }
+  });
+      }
+}
+
+
+    </script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.5.0/papaparse.min.js">
+
+let results;
+
+const csvData = Papa.parse("DOHMH_New_York_City_Restaurant_Inspection_Results .csv", {
+      dynamicTyping: true,
+      download: true,
+      header: true,
+      comments: "*=",
+      complete: function(data) {
+        results = data.data
+      }
+});
+	var coordstofind=0;
+		//Function for Fetching current long lat to check in the database
+	function fetch() {
+			var lat=Number(document.getElementById("LongID").innerHTML);
+			var long=Number(document.getElementById("LatID").innerHTML);
+			coordstofind=lat+long;
+			var i=0;
+			while(i<15672){
+			
+			}
+			
+	}
+</script>
+  </head>
+  <center>
+  <body>
+    <img src="https://dewey.tailorbrands.com/production/brand_version_mockup_image/292/4517771292_32c68364-602c-460d-9ff1-91e9fb239371.png?cb=1611710797" alt="Paris" class="center">
+    <div id="map"></div>
+	      <input id="address" type="textbox" value="Hunter College, New York" />
+      <input id="submit" type="button" value="Search" />
+      <input id="fetchrecord" type="button" onclick="fetch()" value="Fetch" />
+  <p>Latitude:<b id="LatID">40.767840286876634</b>
+	</p>
+  <p>Longitude:<b id="LongID">-73.96453008055687</b></p>
+
+<table>
+  <tr>
+    <h>
+    <th>Resturant Name</th>
+    <th>Current Health Rating</th>
+    <th>Last Health Citation</th>
+    <th>Date of Citation</th>
+    </h>
+  </tr>
+  <tr>
+    <th id="Name">N/A</th>
+    <th id="Rating">N/A</th>
+    <th id="Citation">N/A</th>
+    <th id="Date">N/A</th>
+  </tr>
+</table>
+  </body>
+  </center>
+</html>
